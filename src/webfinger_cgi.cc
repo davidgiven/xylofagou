@@ -2,7 +2,6 @@
 
 int webfinger_cgi()
 {
-	fmt::print("\nWebfinger!\n");
-	return 1;
+    fmt::print("\nWebfinger!\n");
+    return 1;
 }
-

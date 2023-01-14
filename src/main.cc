@@ -8,9 +8,10 @@ static int help_cmd(const char**);
 
 static const std::map<std::string, std::function<int(const char**)>>
     cliCommands = {
-        {"help", help_cmd},
-		{"addactor", addactor_cmd},
-		{"initdb", initdb_cmd},
+        {"help",     help_cmd    },
+        {"addactor", addactor_cmd},
+		{"delactor", delactor_cmd},
+        {"initdb",   initdb_cmd  },
 };
 
 static const std::map<std::string, std::function<int()>> cgiCommands = {
@@ -42,29 +43,30 @@ static int do_command(const char** argv)
 
 static int do_cgi()
 {
-	try
-	{
-		cgi = std::make_unique<cgicc::Cgicc>();
+    try
+    {
+        cgi = std::make_unique<cgicc::Cgicc>();
 
-		auto i = cgiCommands.find(cgi->getEnvironment().getScriptName());
-		if (i == cgiCommands.end())
-			throw std::invalid_argument("Bad command");
+        auto i = cgiCommands.find(cgi->getEnvironment().getScriptName());
+        if (i == cgiCommands.end())
+            throw std::invalid_argument("Bad command");
 
-		return i->second();
-	}
-	catch (std::exception& e)
-	{
-		fmt::print("\n{}\n", e.what());
-		return 1;
-	}
+        return i->second();
+    }
+    catch (std::exception& e)
+    {
+        fmt::print("\n{}\n", e.what());
+        return 1;
+    }
 }
 
 int main(int argc, const char* argv[])
 {
-    if (sqlite3_open("/home/dg/nonshared/xylofagou/xylofagou.db", &db) != SQLITE_OK)
+    if (sqlite3_open("/home/dg/nonshared/xylofagou/xylofagou.db", &db) !=
+        SQLITE_OK)
         error("could not open database file");
 
-	execSql(R"%(
+    execSql(R"%(
 		PRAGMA synchronous = OFF;
 		PRAGMA encoding = "UTF-8";
 		PRAGMA foreign_keys = ON;

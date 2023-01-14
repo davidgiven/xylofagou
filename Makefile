@@ -7,6 +7,7 @@ SRCS = \
 	src/main.cc \
 	src/utils.cc \
 	src/actors.cc \
+	src/sql.cc \
 	src/webfinger_cgi.cc \
 	src/initdb_cmd.cc \
 

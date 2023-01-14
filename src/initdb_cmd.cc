@@ -2,7 +2,7 @@
 
 int initdb_cmd(const char** argv)
 {
-	execSql(R"%(
+    execSql(R"%(
 		BEGIN;
 
 		CREATE TABLE IF NOT EXISTS variables
@@ -19,6 +19,5 @@ int initdb_cmd(const char** argv)
 		COMMIT;
 	)%");
 
-	return 0;
+    return 0;
 }
-
