@@ -19,11 +19,26 @@ int webfinger_cgi()
         return 0;
     }
 
+    auto env = cgi->getEnvironment();
+    auto server = str(format("https://%s:%d/xylofagou/") % env.getServerName() %
+                      env.getServerPort());
+
     boost::json::object properties;
     if (c.has("name"))
         properties["name"] = c.get("name");
 
-    boost::json::array links;
+    boost::json::array links{
+        boost::json::object{{"rel", "self"},
+                            {"type", "application/activity+json"},
+                            {"href", server + acct}}
+    };
+
+    if (c.has("homepage"))
+        links.emplace_back(boost::json::object{
+            {"rel",  "http://webfinger.net/rel/profile-page"},
+            {"type", "text/html"                            },
+            {"href", c.get("homepage")                      }
+        });
 
     std::cout << '\n'
               << boost::json::object{

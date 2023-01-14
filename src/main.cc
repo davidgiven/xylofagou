@@ -49,7 +49,14 @@ static int do_cgi()
     {
         cgi = std::make_unique<cgicc::Cgicc>();
 
-        auto i = cgiCommands.find(cgi->getEnvironment().getScriptName());
+        /* This isn't returned by cgicc! */
+        auto uri = getenvs("REQUEST_URI");
+
+        int query = uri.find('?');
+        if (query != std::string::npos)
+            uri = uri.substr(0, query);
+
+        auto i = cgiCommands.find(uri);
         if (i == cgiCommands.end())
             throw std::invalid_argument("Bad command");
 
@@ -64,9 +71,8 @@ static int do_cgi()
 
 int main(int argc, const char* argv[])
 {
-	std::string dbpath = getenvs("HOME") + "/xylofagou.db";
-    if (sqlite3_open(dbpath.c_str(), &db) !=
-        SQLITE_OK)
+    std::string dbpath = getenvs("HOME") + "/xylofagou.db";
+    if (sqlite3_open(dbpath.c_str(), &db) != SQLITE_OK)
         error("could not open database file");
 
     execSql(R"%(
