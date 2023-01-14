@@ -7,7 +7,8 @@ static int help_cmd(const char**);
 
 static const std::map<std::string, std::function<int(const char**)>>
     cliCommands = {
-        {"help", help_cmd}
+        {"help", help_cmd},
+		{"initdb", initdb_cmd},
 };
 
 static const std::map<std::string, std::function<int()>> cgiCommands = {
@@ -56,6 +57,8 @@ int main(int argc, const char* argv[])
 {
     if (sqlite3_open("xylofagou.db", &db) != SQLITE_OK)
         error("could not open database file");
+
+	execSql("PRAGMA synchronous=off");
 
     int r = 0;
     if (getenv("GATEWAY_INTERFACE"))

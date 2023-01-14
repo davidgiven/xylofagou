@@ -6,6 +6,8 @@ CXX = g++
 SRCS = \
 	src/main.cc \
 	src/utils.cc \
+	src/initdb_cmd.cc \
+	src/wellknown_cgi.cc \
 
 OBJS = $(patsubst %.cc, $(OBJDIR)/%.o, $(SRCS))
 

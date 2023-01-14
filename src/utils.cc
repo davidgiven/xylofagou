@@ -6,3 +6,11 @@ std::string getenvs(std::string key)
 	return p ? p : "";
 }
 
+void execSql(std::string sql)
+{
+	char* errmsg;
+	int i = sqlite3_exec(db, sql.c_str(), nullptr, nullptr, &errmsg);
+	if (i != SQLITE_OK)
+		error("database error: {}", errmsg);
+}
+
