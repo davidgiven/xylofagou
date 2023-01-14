@@ -1,13 +1,14 @@
 OBJDIR = .obj
 CFLAGS = -g
-LDFLAGS = -lsqlite3 -lfmt
+LDFLAGS = -lsqlite3 -lfmt -lcgicc
 CXX = g++
 
 SRCS = \
 	src/main.cc \
 	src/utils.cc \
+	src/actors.cc \
+	src/webfinger_cgi.cc \
 	src/initdb_cmd.cc \
-	src/wellknown_cgi.cc \
 
 OBJS = $(patsubst %.cc, $(OBJDIR)/%.o, $(SRCS))
 

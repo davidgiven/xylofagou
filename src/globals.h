@@ -6,6 +6,7 @@
 #include <map>
 #include <functional>
 #include <sqlite3.h>
+#include <cgicc/Cgicc.h>
 
 template<class... Args>
 void error(const std::string& fmt, Args&&... args)
@@ -16,12 +17,14 @@ void error(const std::string& fmt, Args&&... args)
 	exit(1);
 }
 
-extern int wellknown_cgi();
+extern int webfinger_cgi();
 
+extern int addactor_cmd(const char** argv);
 extern int initdb_cmd(const char** argv);
 
 extern std::string getenvs(std::string key);
 extern void execSql(std::string sql);
 
 extern sqlite3* db;
+extern std::unique_ptr<cgicc::Cgicc> cgi;
 

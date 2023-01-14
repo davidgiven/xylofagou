@@ -2,6 +2,23 @@
 
 int initdb_cmd(const char** argv)
 {
-	return 1;
+	execSql(R"%(
+		BEGIN;
+
+		CREATE TABLE IF NOT EXISTS variables
+		(
+			key TEXT NOT NULL PRIMARY KEY,
+			value TEXT
+		);
+
+		CREATE TABLE IF NOT EXISTS actors
+		(
+			email TEXT NOT NULL PRIMARY KEY
+		);
+
+		COMMIT;
+	)%");
+
+	return 0;
 }
 

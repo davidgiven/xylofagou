@@ -2,17 +2,19 @@
 #include <fnmatch.h>
 
 sqlite3* db;
+std::unique_ptr<cgicc::Cgicc> cgi;
 
 static int help_cmd(const char**);
 
 static const std::map<std::string, std::function<int(const char**)>>
     cliCommands = {
         {"help", help_cmd},
+		{"addactor", addactor_cmd},
 		{"initdb", initdb_cmd},
 };
 
 static const std::map<std::string, std::function<int()>> cgiCommands = {
-    {"/.well-known/something", wellknown_cgi}
+    {"/.well-known/webfinger", webfinger_cgi}
 };
 
 int help_cmd(const char**)
@@ -24,7 +26,7 @@ int help_cmd(const char**)
     return 1;
 }
 
-static int command(const char** argv)
+static int do_command(const char** argv)
 {
     if (!argv[1])
         error(
@@ -38,33 +40,42 @@ static int command(const char** argv)
     return i->second(argv + 2);
 }
 
-static int cgi()
+static int do_cgi()
 {
-    std::string path = getenvs("PATH_INFO");
+	try
+	{
+		cgi = std::make_unique<cgicc::Cgicc>();
 
-    for (auto& i : cgiCommands)
-    {
-        int r = fnmatch(i.first.c_str(), path.c_str(), FNM_PATHNAME);
-        if (r == 0)
-            return i.second();
-    }
+		auto i = cgiCommands.find(cgi->getEnvironment().getScriptName());
+		if (i == cgiCommands.end())
+			throw std::invalid_argument("Bad command");
 
-    fmt::print(stderr, "Bad path");
-    return 1;
+		return i->second();
+	}
+	catch (std::exception& e)
+	{
+		fmt::print("\n{}\n", e.what());
+		return 1;
+	}
 }
 
 int main(int argc, const char* argv[])
 {
-    if (sqlite3_open("xylofagou.db", &db) != SQLITE_OK)
+    if (sqlite3_open("/home/dg/nonshared/xylofagou/xylofagou.db", &db) != SQLITE_OK)
         error("could not open database file");
 
-	execSql("PRAGMA synchronous=off");
+	execSql(R"%(
+		PRAGMA synchronous = OFF;
+		PRAGMA encoding = "UTF-8";
+		PRAGMA foreign_keys = ON;
+		PRAGMA temp_store = MEMORY;
+	)%");
 
     int r = 0;
     if (getenv("GATEWAY_INTERFACE"))
-        r = cgi();
+        r = do_cgi();
     else
-        r = command(argv);
+        r = do_command(argv);
 
     sqlite3_close(db);
     return r;
