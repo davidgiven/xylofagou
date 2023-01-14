@@ -64,7 +64,8 @@ static int do_cgi()
 
 int main(int argc, const char* argv[])
 {
-    if (sqlite3_open("/home/dg/nonshared/xylofagou/xylofagou.db", &db) !=
+	std::string dbpath = getenvs("HOME") + "/xylofagou.db";
+    if (sqlite3_open(dbpath.c_str(), &db) !=
         SQLITE_OK)
         error("could not open database file");
 

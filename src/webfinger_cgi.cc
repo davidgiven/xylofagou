@@ -23,7 +23,7 @@ int webfinger_cgi()
     if (c.has("name"))
         properties["name"] = c.get("name");
 
-    boost::json::object links;
+    boost::json::array links;
 
     std::cout << '\n'
               << boost::json::object{
