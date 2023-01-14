@@ -1,16 +1,19 @@
 OBJDIR = .obj
 CFLAGS = -g
+LDFLAGS = -lsqlite3 -lfmt
 CXX = g++
 
 SRCS = \
 	src/main.cc \
+	src/utils.cc \
 
 OBJS = $(patsubst %.cc, $(OBJDIR)/%.o, $(SRCS))
 
 xylofagou.cgi: $(OBJS)
 	@echo LINK $<
 	@mkdir -p $(dir $@)
-	@$(CXX) $(LDFLAGS) -o $@ $<
+	@$(CXX) -o $@ $^ $(LDFLAGS)
+	@echo done.
 
 $(OBJDIR)/%.o: %.cc
 	@echo CXX $<
