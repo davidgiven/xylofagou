@@ -8,10 +8,12 @@ static int help_cmd(const char**);
 
 static const std::map<std::string, std::function<int(const char**)>>
     cliCommands = {
-        {"help",     help_cmd    },
+        {"lsactors", lsactors_cmd},
         {"addactor", addactor_cmd},
-		{"delactor", delactor_cmd},
+        {"delactor", delactor_cmd},
+        {"help",     help_cmd    },
         {"initdb",   initdb_cmd  },
+        {"setactor", setactor_cmd},
 };
 
 static const std::map<std::string, std::function<int()>> cgiCommands = {
@@ -20,9 +22,9 @@ static const std::map<std::string, std::function<int()>> cgiCommands = {
 
 int help_cmd(const char**)
 {
-    fmt::print("Commands:\n");
+    std::cout << "Commands:\n";
     for (auto& i : cliCommands)
-        fmt::print("  {}\n", i.first);
+        std::cout << format("  %s\n") % i.first;
 
     return 1;
 }
@@ -36,7 +38,7 @@ static int do_command(const char** argv)
 
     auto i = cliCommands.find(argv[1]);
     if (i == cliCommands.end())
-        error("unrecognised command '{}' (try 'help')", argv[1]);
+        error(format("unrecognised command '%s' (try 'help')") % argv[1]);
 
     return i->second(argv + 2);
 }
@@ -55,7 +57,7 @@ static int do_cgi()
     }
     catch (std::exception& e)
     {
-        fmt::print("\n{}\n", e.what());
+        std::cout << '\n' << e.what() << '\n';
         return 1;
     }
 }

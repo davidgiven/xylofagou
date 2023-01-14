@@ -11,8 +11,15 @@ public:
     void run();
     int step();
 
+    bool has(const std::string column);
+    std::string get(const std::string column);
+
+private:
+    int getColumn(const std::string column);
+
 private:
     sqlite3_stmt* _statement;
     std::map<std::string, int> _parameters;
+    std::map<std::string, int> _columns;
     bool _reset;
 };

@@ -1,6 +1,6 @@
 OBJDIR = .obj
-CFLAGS = -g
-LDFLAGS = -lsqlite3 -lfmt -lcgicc
+CFLAGS = -g -O3 -flto -ffunction-sections -fdata-sections
+LDFLAGS = -flto -lsqlite3 -lcgicc -lboost_json -static
 CXX = g++
 
 SRCS = \

@@ -13,7 +13,9 @@ int initdb_cmd(const char** argv)
 
 		CREATE TABLE IF NOT EXISTS actors
 		(
-			email TEXT NOT NULL PRIMARY KEY
+			email TEXT NOT NULL PRIMARY KEY,
+			name TEXT,
+			homepage TEXT
 		);
 
 		COMMIT;
