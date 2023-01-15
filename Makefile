@@ -1,21 +1,13 @@
 OBJDIR = .obj
-CFLAGS = -I$(HOME)/include -g -O3 -flto -ffunction-sections -fdata-sections
-LDFLAGS = -L$(HOME)/lib -flto -lsqlite3 -lcgicc -lboost_json 
+CFLAGS = -I$(HOME)/include -g -Os -ffunction-sections -fdata-sections
+LDFLAGS = -L$(HOME)/lib -lsqlite3 -lcgicc -lboost_json 
 CXX = g++
 
-SRCS = \
-	src/actors.cc \
-	src/initdb_cmd.cc \
-	src/main.cc \
-	src/properties.cc \
-	src/sql.cc \
-	src/utils.cc \
-	src/webfinger_cgi.cc \
-
+SRCS = $(wildcard src/*.cc)
 OBJS = $(patsubst %.cc, $(OBJDIR)/%.o, $(SRCS))
 
 xylofagou.cgi: $(OBJS)
-	@echo LINK $<
+	@echo LINK $@
 	@mkdir -p $(dir $@)
 	@$(CXX) -o $@ $^ $(LDFLAGS)
 	@echo done.

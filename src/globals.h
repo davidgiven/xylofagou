@@ -11,10 +11,13 @@
 using boost::format;
 using boost::str;
 
+class Response;
+
 extern void error(const std::string msg);
 extern void error(boost::basic_format<char>& fmt);
 
-extern int webfinger_cgi();
+extern void actor_cgi(Response& res);
+extern void webfinger_cgi(Response& res);
 
 extern int addactor_cmd(const char** argv);
 extern int delactor_cmd(const char** argv);

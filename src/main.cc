@@ -1,5 +1,7 @@
 #include "globals.h"
 #include <fnmatch.h>
+#include <boost/algorithm/string.hpp>
+#include "response.h"
 
 sqlite3* db;
 std::unique_ptr<cgicc::Cgicc> cgi;
@@ -18,8 +20,9 @@ static const std::map<std::string, std::function<int(const char**)>>
         {"lsprops",  lsprops_cmd },
 };
 
-static const std::map<std::string, std::function<int()>> cgiCommands = {
-    {"/.well-known/webfinger", webfinger_cgi}
+static const std::map<std::string, std::function<void(Response&)>> cgiCommands =
+    {
+        {"actor", actor_cgi},
 };
 
 int help_cmd(const char**)
@@ -52,17 +55,23 @@ static int do_cgi()
         cgi = std::make_unique<cgicc::Cgicc>();
 
         /* This isn't returned by cgicc! */
-        auto uri = getenvs("REQUEST_URI");
+        Response res;
+        if (boost::starts_with(
+                getenvs("REQUEST_URI"), "/.well-known/webfinger"))
+            webfinger_cgi(res);
+        else
+        {
+            auto cmd = (*cgi)("cmd");
 
-        int query = uri.find('?');
-        if (query != std::string::npos)
-            uri = uri.substr(0, query);
+            auto i = cgiCommands.find(cmd);
+            if (i == cgiCommands.end())
+                throw std::invalid_argument("Bad command");
 
-        auto i = cgiCommands.find(uri);
-        if (i == cgiCommands.end())
-            throw std::invalid_argument("Bad command");
+            i->second(res);
+        }
 
-        return i->second();
+        std::cout << res;
+        return 0;
     }
     catch (std::exception& e)
     {

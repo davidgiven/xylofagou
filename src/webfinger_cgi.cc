@@ -2,8 +2,9 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/json.hpp>
 #include "sql.h"
+#include "response.h"
 
-int webfinger_cgi()
+void webfinger_cgi(Response& res)
 {
     auto acct = (*cgi)("resource");
     if (boost::starts_with(acct, "acct:"))
@@ -15,8 +16,8 @@ int webfinger_cgi()
 
     if (i != SQLITE_ROW)
     {
-        std::cout << "Status: 404\n\n";
-        return 0;
+        res.setStatus(404);
+        return;
     }
 
     auto env = cgi->getEnvironment();
@@ -29,7 +30,7 @@ int webfinger_cgi()
     boost::json::array links{
         boost::json::object{{"rel", "self"},
                             {"type", "application/activity+json"},
-                            {"href", server + "?actor=" + acct}}
+                            {"href", server + "?cmd=actor&actor=" + acct}}
     };
 
     if (c.has("homepage"))
@@ -39,12 +40,9 @@ int webfinger_cgi()
             {"href", c.get("homepage")                      }
         });
 
-    std::cout << '\n'
-              << boost::json::object{
-                     {"subject",    "acct:" + acct},
-                     {"properties", properties    },
-                     {"links",      links         }
+    res << boost::json::object{
+        {"subject",    "acct:" + acct},
+        {"properties", properties    },
+        {"links",      links         }
     };
-
-    return 1;
 }
