@@ -5,7 +5,7 @@ int initdb_cmd(const char** argv)
     execSql(R"%(
 		BEGIN;
 
-		CREATE TABLE IF NOT EXISTS variables
+		CREATE TABLE IF NOT EXISTS properties
 		(
 			key TEXT NOT NULL PRIMARY KEY,
 			value TEXT

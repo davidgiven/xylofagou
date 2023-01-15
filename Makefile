@@ -4,12 +4,13 @@ LDFLAGS = -L$(HOME)/lib -flto -lsqlite3 -lcgicc -lboost_json
 CXX = g++
 
 SRCS = \
-	src/main.cc \
-	src/utils.cc \
 	src/actors.cc \
-	src/sql.cc \
-	src/webfinger_cgi.cc \
 	src/initdb_cmd.cc \
+	src/main.cc \
+	src/properties.cc \
+	src/sql.cc \
+	src/utils.cc \
+	src/webfinger_cgi.cc \
 
 OBJS = $(patsubst %.cc, $(OBJDIR)/%.o, $(SRCS))
 

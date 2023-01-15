@@ -21,6 +21,11 @@ extern int delactor_cmd(const char** argv);
 extern int setactor_cmd(const char** argv);
 extern int lsactors_cmd(const char** argv);
 extern int initdb_cmd(const char** argv);
+extern int setprop_cmd(const char** argv);
+extern int lsprops_cmd(const char** argv);
+
+extern std::string getProp(std::string key);
+extern void setProp(std::string key);
 
 extern std::string getenvs(std::string key);
 extern void execSql(std::string sql);

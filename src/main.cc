@@ -14,6 +14,8 @@ static const std::map<std::string, std::function<int(const char**)>>
         {"help",     help_cmd    },
         {"initdb",   initdb_cmd  },
         {"setactor", setactor_cmd},
+        {"setprop",  setprop_cmd },
+        {"lsprops",  lsprops_cmd },
 };
 
 static const std::map<std::string, std::function<int()>> cgiCommands = {
