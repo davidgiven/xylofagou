@@ -1,7 +1,7 @@
 #include "globals.h"
 #include "sql.h"
 
-std::string getprop(std::string key)
+std::string getProp(std::string key)
 {
     Cursor c("SELECT value FROM properties WHERE key = :key");
     c.bind(":key", key);

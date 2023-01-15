@@ -20,8 +20,7 @@ int webfinger_cgi()
     }
 
     auto env = cgi->getEnvironment();
-    auto server = str(format("https://%s:%d/xylofagou/") % env.getServerName() %
-                      env.getServerPort());
+    auto server = getProp("server");
 
     boost::json::object properties;
     if (c.has("name"))
@@ -30,7 +29,7 @@ int webfinger_cgi()
     boost::json::array links{
         boost::json::object{{"rel", "self"},
                             {"type", "application/activity+json"},
-                            {"href", server + acct}}
+                            {"href", server + "?actor=" + acct}}
     };
 
     if (c.has("homepage"))
